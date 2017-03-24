@@ -1,0 +1,11 @@
+
+[android]
+  target = android-25
+
+[maven_repositories]
+  android = //Users/akuhlevskyi/Library/Android/sdk/extras/android/m2repository
+  google = //Users/akuhlevskyi/Library/Android/sdk/extras/google/m2repository
+  central = https://repo1.maven.org/maven2
+
+[httpserver]
+  port = 0
