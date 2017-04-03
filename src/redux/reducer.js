@@ -2,7 +2,9 @@ import {Map, fromJS} from 'immutable';
 import {loop, combineReducers} from 'redux-loop-symbol-ponyfill';
 import NavigationStateReducer from '../modules/navigation/NavigationState';
 import CounterStateReducer from '../modules/counter/CounterState';
+
 import SessionStateReducer, {RESET_STATE} from '../modules/session/SessionState';
+import MastersStateReduces from '../modules/masters/MastersState';
 
 const reducers = {
   // Counter sample app state. This can be removed in a live application
@@ -12,8 +14,9 @@ const reducers = {
   //`navigationState`
   navigationState: NavigationStateReducer,
 
-  session: SessionStateReducer
+  session: SessionStateReducer,
 
+  masters: MastersStateReduces,
 };
 
 // initial state, accessor and mutator for supporting root-level

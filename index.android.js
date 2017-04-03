@@ -12,15 +12,15 @@ class AvatarFest extends Component {
 
   navigateBack() {
     const navigationState = store.getState().get('navigationState');
-    const tabs = navigationState.get('tabs');
-    const tabKey = tabs.getIn(['routes', tabs.get('index')]).get('key');
-    const currentTab = navigationState.get(tabKey);
+    const items = navigationState.get('menuItems');
+    const sceneKey = items.getIn(['routes', items.get('index')]).get('key');
+    const currentScene = navigationState.getIn(['scenes', sceneKey]);
 
     // if we are in the beginning of our tab stack
-    if (currentTab.get('index') === 0) {
+    if (currentScene.get('index') === 0) {
       // if we are not in the first tab, switch tab to the leftmost one
-      if (tabs.get('index') !== 0) {
-        store.dispatch(NavigationStateActions.switchTab(0));
+      if (items.get('index') !== 0) {
+        store.dispatch(NavigationStateActions.switchScene(0));
         return true;
       }
 

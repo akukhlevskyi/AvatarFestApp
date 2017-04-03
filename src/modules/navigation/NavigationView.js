@@ -15,75 +15,60 @@ const {
   PropTypes: NavigationPropTypes
 } = NavigationExperimental;
 
-import Toolbar from '../../components/Toolbar';
+import ParalaxToolbar from '../../components/ParalaxToolbar'
 import SideBar from '../../components/SideBar';
 import MenuItem from '../../components/MenuItem';
 
-import nativeImageSource from 'nativeImageSource';
-
 import AppRouter from '../AppRouter';
-
-// Customize bottom tab bar height here if desired
-const TAB_BAR_HEIGHT = 50;
-// const DRAWER_ICON = nativeImageSource({
-//         android: 'navicon',
-//         width: 48,
-//         height: 48
-// });
 
 class NavigationView extends Component {
   static displayName = 'NavigationView';
 
   static propTypes = {
     onNavigateBack: PropTypes.func.isRequired,
-    onNavigateCompleted: PropTypes.func,
     navigationState: PropTypes.shape({
-      tabs: PropTypes.shape({
+      menuItems: PropTypes.shape({
         routes: PropTypes.arrayOf(PropTypes.shape({
           key: PropTypes.string.isRequired,
           title: PropTypes.string.isRequired
         })).isRequired
       }).isRequired,
-      NewsScene: NavigationPropTypes.navigationState.isRequired,
-      LineUpScene: NavigationPropTypes.navigationState.isRequired
+      scenes: PropTypes.object.isRequired,
     }),
-    switchTab: PropTypes.func.isRequired,
-    pushRoute: PropTypes.func.isRequired
-  };
-
-  // NavigationHeader accepts a prop style
-  // NavigationHeader.title accepts a prop textStyle
-  renderHeader = (sceneProps) => {
-    return (<Toolbar
-                  sceneProps={sceneProps}
-                  style={styles.toolbar}
-                  navIcon={{uri: "navicon"}}
-                  onIconClicked={() => this.sideBar.openMenu(true)}
-                  title={sceneProps.scene.route.title}
-                  titleColor="white"
-                />
-    );
+    switchScene: PropTypes.func.isRequired
   };
 
   renderScene = (sceneProps) => {
     // render scene and apply padding to cover
     // for app bar and navigation bar
+    const showBackButton = this.props.showBackButton;
+    const icon = showBackButton ?  'ic_action_back' : 'ic_action_navigate';
+    const onPress = () => {
+      showBackButton ? this.props.onNavigateBack() : this.sideBar.toggle();
+    }
+
     return (
-      <View style={styles.container}>
-        {AppRouter(sceneProps)}
-      </View>
+        <ParalaxToolbar
+          navbarBackgroundColor='#56d399'
+          style={styles.container}
+          title={sceneProps.scene.route.title}
+          profileImage={sceneProps.scene.route.profileImage}
+          navbarBackgroundImage={sceneProps.scene.route.backgroundImage}
+          leftIcon={{icon, onPress}} >
+            {AppRouter(sceneProps)}
+        </ParalaxToolbar>
     );
   };
 
   handleMenuItem = (key) => {
-    this.props.switchTab(key);
+    this.props.switchScene(key);
     this.sideBar.openMenu(false);
   }
 
   renderMenuItem = (rowData) => {
     return (
       <MenuItem
-        switchScene={this.handleMenuItem}
+        onPress={this.handleMenuItem}
         scene={rowData.key}
         title={rowData.title}
         icon={rowData.icon}
@@ -96,23 +81,22 @@ class NavigationView extends Component {
         rowHasChanged: (r1, r2) => r1.id !== r2.id
     });
 
-    const scenes = this.props.navigationState.tabs;
+    const {menuItems} = this.props.navigationState;
     return (
           <View style={styles.menuContentWrapper}>
             <View style={styles.menuContentHeader}/>
             <ListView
-              dataSource={dataSource.cloneWithRows(scenes.routes)}
+              dataSource={dataSource.cloneWithRows(menuItems.routes)}
               renderRow={this.renderMenuItem}/>
           </View>
         );
   };
 
   render() {
-    const {tabs} = this.props.navigationState;
-    const tabKey = tabs.routes[tabs.index].key;
-    const scenes = this.props.navigationState[tabKey];
+    const {menuItems} = this.props.navigationState;
+    const sceneKey = menuItems.routes[menuItems.index].key;
+    const scene = this.props.navigationState.scenes[sceneKey];
 
-    
     return (
       <SideBar
         style={styles.container}
@@ -120,10 +104,9 @@ class NavigationView extends Component {
         ref={(sideBar) => { this.sideBar = sideBar; }}
         menu={this.renderMenu}>
         <NavigationCardStack
-          key={'stack_' + tabKey}
+          key={'stack_' + sceneKey}
           onNavigateBack={this.props.onNavigateBack}
-          navigationState={scenes}
-          renderHeader={this.renderHeader}
+          navigationState={scene}
           renderScene={this.renderScene}
           />
       </SideBar>
@@ -135,6 +118,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  content: {
+    flex: 1,
+  },
   menuContentWrapper: {
     flexDirection: 'column',
     backgroundColor: 'white',
@@ -143,10 +129,6 @@ const styles = StyleSheet.create({
     height: 112,
     backgroundColor: '#56d399',
   },
-  toolbar: {
-    height: 56,
-    backgroundColor: '#56d399',
-  }
 });
 
 export default NavigationView;

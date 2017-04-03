@@ -1,16 +1,17 @@
+/* @flow */
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {pushRoute, popRoute, switchTab, navigationCompleted} from './NavigationState';
+import {pushRoute, popRoute, switchScene, showBackButton} from './NavigationState';
 import NavigationView from './NavigationView';
 
 export default connect(
   state => ({
-    navigationState: state.get('navigationState').toJS()
+    navigationState: state.get('navigationState').toJS(),
+    showBackButton:  showBackButton(state.get('navigationState')),
   }),
   dispatch => {
     return {
-      switchTab: bindActionCreators(switchTab, dispatch),
-      pushRoute: bindActionCreators(pushRoute, dispatch),
+      switchScene: bindActionCreators(switchScene, dispatch),
       onNavigateBack: bindActionCreators(popRoute, dispatch),
       onNavigateCompleted() {
         // FIXME: why is navigationCompleted non-existant in NavigationState?

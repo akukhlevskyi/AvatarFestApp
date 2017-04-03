@@ -1,36 +1,36 @@
 import React, {PropTypes, Component} from 'react';
 import {
   View,
-  TouchableNativeFeedback,
   Image,
   Text,
   StyleSheet
 } from 'react-native';
 
+import Touchable from "./Touchable"
+
 class MenuItem extends Component {
   static displayName = 'MenuItem';
 
   static propTypes = {
-    switchScene: React.PropTypes.func,
-    scene: React.PropTypes.string,
-    title: React.PropTypes.string,
-    icon: React.PropTypes.string,
+    onPress: PropTypes.func,
+    scene: PropTypes.string,
+    title: PropTypes.string,
+    icon: PropTypes.string,
   };
 
   render() {
     return (
-      <TouchableNativeFeedback
+      <Touchable
         onPress={() => {
-          this.props.switchScene(this.props.scene);
-        }}
-        background={TouchableNativeFeedback.SelectableBackground()}>
+          this.props.onPress(this.props.scene);
+        }}>
         <View style={styles.item}>
           <Image
             source={{uri: this.props.icon}}
             style={styles.itemIcon}/>
           <Text style={styles.itemTitle}>{this.props.title}</Text>
         </View>
-      </TouchableNativeFeedback>
+      </Touchable>
     )
   }
 }
