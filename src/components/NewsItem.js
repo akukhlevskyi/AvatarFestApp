@@ -1,5 +1,4 @@
 import React, {PropTypes, Component} from 'react';
-
 import {
   View,
   Image,
@@ -10,17 +9,16 @@ import {
 import Touchable from "./Touchable"
 
 const ITEM_OFFSET = 6;
-const ITEM_SIZE = Dimensions.get('window').width / 2 - ITEM_OFFSET;
 
-class MasterItem extends Component {
-  static displayName = 'MasterItem';
+class NewsItem extends Component {
+  static displayName = 'NewsItem';
 
   static propTypes = {
     onPress: PropTypes.func.isRequired,
     data: PropTypes.shape({
       description: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      avatarImg: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
     }).isRequired,
   };
 
@@ -32,14 +30,18 @@ class MasterItem extends Component {
             this.props.onPress(this.props.data);
           }}>
           <View style={styles.content}>
-            <Image
-              source={{uri: this.props.data.avatarImg}}
-              style={styles.icon}/>
-            <View style={styles.textWrap}>
-              <Text style={styles.title}>{this.props.data.name}</Text>
+            <View style={styles.wrap}>
+              <Text style={styles.title}>{this.props.data.title}</Text>
             </View>
-            <View style={styles.textWrap}>
-              <Text style={styles.description}>{this.props.data.description}</Text>
+            <View style={styles.wrap}>
+              <Image source={{uri: this.props.data.image}}
+                style={styles.icon}/>
+            </View>
+            <View style={styles.wrap}>
+              <Text numberOfLines={3}
+                style={styles.description}>
+                  {this.props.data.description}
+                </Text>
             </View>
           </View>
         </Touchable>
@@ -50,9 +52,9 @@ class MasterItem extends Component {
 
 const styles = StyleSheet.create({
   item: {
-    width: ITEM_SIZE,
+    flex: 1,
+    flexWrap: "wrap",
     padding: ITEM_OFFSET,
-    flexDirection: 'row',
   },
   content: {
     justifyContent: 'center',
@@ -70,18 +72,19 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   icon: {
-    width: (ITEM_SIZE-4*ITEM_OFFSET),
-    height: (ITEM_SIZE-4*ITEM_OFFSET),
-    borderRadius: (ITEM_SIZE-4*ITEM_OFFSET)/2,
+    flex: 1,
+    height: 160,
+    margin:ITEM_OFFSET,
+    borderRadius: 5,
   },
-  textWrap: {
+  wrap: {
     flexDirection:'row',
   },
   title: {
     flex: 1,
     flexWrap: "wrap",
     fontSize: 16,
-    marginTop: 12,
+    margin: 6,
     height: 20,
     justifyContent: 'center',
     color: '#222'
@@ -90,11 +93,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: "wrap",
     fontSize: 14,
-    height: 20,
+    minHeight: 20,
+    maxHeight: 70,
+    margin: 6,
     justifyContent: 'center',
-    marginTop: 6,
     color: '#646464',
   },
 });
 
-export default MasterItem;
+export default NewsItem;

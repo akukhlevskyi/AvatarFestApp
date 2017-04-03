@@ -9,20 +9,20 @@ import {
   StyleSheet
 } from 'react-native';
 
-import MasterItem from '../../components/MasterItem';
+import NewsItem from '../../components/NewsItem';
 
-class MastersView extends Component {
-  static displayName = 'MastersView';
+class NewsView extends Component {
+  static displayName = 'NewsView';
   static propTypes = {
     isReady: PropTypes.bool.isRequired,
     navigationStateActions: PropTypes.shape({
       pushRoute: PropTypes.func.isRequired,
     }).isRequired,
-    updateMasters: PropTypes.func.isRequired,
+    updateNews: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
-    this.props.updateMasters();
+    this.props.updateNews();
   }
 
   render() {
@@ -41,16 +41,15 @@ class MastersView extends Component {
 
   handleItem = (rowData) => {
     this.props.navigationStateActions.pushRoute({
-      key: 'Master',
+      key: 'Article',
       title: rowData.title,
-      profileImage: rowData.avatarImg,
-      backgroundImage: rowData.backgrounImg,
-      data: { title: rowData.name, description: rowData.description},
+      backgroundImage: rowData.image,
+      data: { title: rowData.title, description: rowData.description},
     });
   }
 
   renderItem = (rowData) => {
-    return (<MasterItem
+    return (<NewsItem
       onPress={this.handleItem}
       data={rowData}/>
     );
@@ -62,7 +61,7 @@ class MastersView extends Component {
     );
     return (
       <ListView
-        contentContainerStyle={styles.list}
+        style={styles.list}
         pageSize={2}
         initialListSize={21}
         scrollRenderAheadDistance={500}
@@ -74,7 +73,7 @@ class MastersView extends Component {
   renderNoData = () => {
     return (
       <View style={styles.container}>
-        <Text style={[styles.centered, styles.noData]}>No data</Text>
+        <Text style={styles.noData}>No data</Text>
       </View>
 
     )
@@ -86,20 +85,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
   },
-  noData: {
-    fontSize: 18,
-    color: '#646464',
-  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  noData: {
+    fontSize: 18,
+    color: '#646464',
+  },
   list: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
     margin: 6,
   },
 });
-export default MastersView;
+export default NewsView;

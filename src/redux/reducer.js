@@ -5,6 +5,7 @@ import CounterStateReducer from '../modules/counter/CounterState';
 
 import SessionStateReducer, {RESET_STATE} from '../modules/session/SessionState';
 import MastersStateReduces from '../modules/masters/MastersState';
+import NewsStateReduces from '../modules/news/NewsState';
 
 const reducers = {
   // Counter sample app state. This can be removed in a live application
@@ -17,6 +18,8 @@ const reducers = {
   session: SessionStateReducer,
 
   masters: MastersStateReduces,
+
+  news: NewsStateReduces,
 };
 
 // initial state, accessor and mutator for supporting root-level

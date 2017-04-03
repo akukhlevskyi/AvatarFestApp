@@ -72,7 +72,7 @@ const initialState = fromJS({
   scenes: {
     NewsScene: {
       index: 0,
-      routes: [{key: 'Counter', title: 'News'}]
+      routes: [{key: 'News', title: 'News'}]
     },
     LineUpScene: {
       index: 0,
@@ -82,10 +82,10 @@ const initialState = fromJS({
       index: 0,
       routes: [{key: 'Masters', title: 'Masters'}]
     },
-    MasterScene: {
-      index: 1,
-      routes: [{key: 'Master', title: 'Master'}]
-    },
+    // MasterScene: {
+    //   index: 1,
+    //   routes: [{key: 'Profile', title: 'Master'}]
+    // },
     AboutScene: {
       index: 0,
       routes: [{key: 'Color', title: 'About'}]

@@ -4,7 +4,8 @@ import React from 'react';
 import CounterViewContainer from './counter/CounterViewContainer';
 import ColorViewContainer from './colors/ColorViewContainer';
 import MastersViewContainer from './masters/MastersViewContainer';
-import MasterViewContainer from './masters/MasterViewContainer';
+import NewsViewContainer from './news/NewsViewContainer';
+import SimpleContent from '../components/SimpleContent';
 
 /**
  * AppRouter is responsible for mapping a navigator scene to a view
@@ -14,12 +15,14 @@ export default function AppRouter(props) {
 
   const {key} = props.scene.route;
   switch (key) {
-    case 'Counter':
-    return (<CounterViewContainer />);
+    case 'News':
+    return (<NewsViewContainer />);
     case 'Masters':
     return (<MastersViewContainer />)
+
     case 'Master':
-    return (<MasterViewContainer data={props.scene.route.data} />)
+    case 'Article':
+    return (<SimpleContent data={props.scene.route.data} />)
 
     case 'Color':
     default:
