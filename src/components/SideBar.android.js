@@ -9,6 +9,18 @@ import React, {PropTypes, Component} from 'react';
  import BaseSideBar from  './BaseSideBar';
 
  class SideBar extends BaseSideBar {
+
+   constructor(props) {
+     super(props);
+     this.state = {opened: props.isOpen};
+   }
+
+   componentWillReceiveProps(props) {
+    if (this.isOpen() !== props.isOpen) {
+       this.openMenu(props.isOpen);
+    }
+   }
+
    render() {
      return (
        <DrawerLayoutAndroid
@@ -16,14 +28,16 @@ import React, {PropTypes, Component} from 'react';
          drawerWidth={this.props.menuWidth}
          keyboardDismissMode="on-drag"
          onDrawerOpen={() => {
-           this.opened = true;
-           if (!!this.props.onChange) this.props.onChange(this.opened);
+           this.setState({opened: true});
+           if (!!this.props.onChange) this.props.onChange(true);
          }}
          onDrawerClose={() => {
-           this.opened = false;
-           if (!!this.props.onChange) this.props.onChange(this.opened);
+           this.setState({opened: false});
+           if (!!this.props.onChange) this.props.onChange(false);
          }}
-         ref={(drawer) => { this.drawer = drawer; }}
+         ref={(drawer) => {
+           this.drawer = drawer;
+         }}
          renderNavigationView={this.props.menu}>
            <View style={styles.container}>
              {this.props.children}
@@ -33,19 +47,11 @@ import React, {PropTypes, Component} from 'react';
    }
 
    isOpen = () => {
-     return this.opened;
+     return this.state.opened;
    }
 
    toggle = () => {
-     if (!this.drawer) {
-       return;
-     }
-
-     if (!this.opened) {
-       this.drawer.openDrawer();
-     } else {
-       this.drawer.closeDrawer();
-     }
+     this.openMenu(!this.isOpen())
    }
 
    openMenu = (isOpen) => {
@@ -53,11 +59,13 @@ import React, {PropTypes, Component} from 'react';
        return;
      }
 
-     if (!!isOpen) {
+     this.setState({opened : isOpen});
+     if (isOpen) {
        this.drawer.openDrawer();
      } else {
        this.drawer.closeDrawer();
      }
+
    }
  }
 

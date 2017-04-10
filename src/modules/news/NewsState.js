@@ -23,7 +23,7 @@ const initialState = fromJS({
 });
 
 // Reducer
-export default function NewsStateReduces(state = initialState, action) {
+export default function NewsStateReducer(state = initialState, action) {
   switch (action.type) {
     case FETCH_NEWS:
       if (action.payload === undefined || action.payload.length == 0) {

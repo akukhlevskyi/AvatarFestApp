@@ -5,35 +5,34 @@ import CounterViewContainer from './counter/CounterViewContainer';
 import ColorViewContainer from './colors/ColorViewContainer';
 import MastersViewContainer from './masters/MastersViewContainer';
 import NewsViewContainer from './news/NewsViewContainer';
-import SimpleContent from '../components/SimpleContent';
+import SimpleContentContainer from './content/SimpleContentContainer';
+import LineUpViewContainer from './lineup/LineUpViewContainer';
 
 /**
  * AppRouter is responsible for mapping a navigator scene to a view
  */
 export default function AppRouter(props) {
-  console.log("AppRouter " + JSON.stringify(props, null, 2));
+  //console.warn("AppRouter " + JSON.stringify(props.scene.route, null, 2));
 
   const {key} = props.scene.route;
   switch (key) {
     case 'News':
-    return (<NewsViewContainer />);
+    return (<NewsViewContainer {...props.scene.route} />);
     case 'Masters':
-    return (<MastersViewContainer />)
-
+    return (<MastersViewContainer {...props.scene.route} />);
+    case 'LineUp':
+    return (<LineUpViewContainer {...props.scene.route} />);
     case 'Master':
     case 'Article':
-    return (<SimpleContent data={props.scene.route.data} />)
-
+    return (<SimpleContentContainer {...props.scene.route} />);
     case 'Color':
     default:
-  //  if (key.indexOf('Color') === 0) {
       const index = props.scenes.indexOf(props.scene);
       return (
         <ColorViewContainer
           index={index}
         />
       );
-//    }
   }
   // console.warn('Unknown navigation key: ' + key);
   throw new Error('Unknown navigation key: ' + key);

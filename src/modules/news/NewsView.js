@@ -5,10 +5,11 @@ import {
   Image,
   ListView,
   ActivityIndicator,
-  Dimensions,
   StyleSheet
 } from 'react-native';
 
+import ParalaxToolbar from '../../components/ParalaxToolbar';
+import CicledVideo from '../../components/CicledVideo';
 import NewsItem from '../../components/NewsItem';
 
 class NewsView extends Component {
@@ -19,6 +20,7 @@ class NewsView extends Component {
       pushRoute: PropTypes.func.isRequired,
     }).isRequired,
     updateNews: PropTypes.func.isRequired,
+    //toggleMenu: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -27,24 +29,43 @@ class NewsView extends Component {
 
   render() {
     if (!this.props.isReady) {
-      return (
-        <View style={styles.container}>
-          <ActivityIndicator style={styles.centered} />
-        </View>
-      );
+      return this.renderDecorator((<ActivityIndicator style={styles.centered} />));
     }
 
     const {items} = this.props;
+    return this.renderDecorator(items.length > 0 ? this.renderList(items) : this.renderNoData());
+  }
 
-    return items.length > 0 ? this.renderList(items) : this.renderNoData();
+  renderHeaderVideo = () => {
+    return (<CicledVideo style={styles.container} source={require('./res/video.mp4')}/>);
+  }
+
+  renderDecorator = (content) => {
+    const icon = 'ic_action_navigate';
+    const onPress = () => {
+       this.props.navigationStateActions.toggleMenu();
+    }
+
+    return (
+        <ParalaxToolbar
+          navbarBackgroundColor='#61B0DF'
+          style={styles.container}
+          title={this.props.title}
+          navbarBackgroundImage={require('./res/home.jpg')}
+          headerHeight={240}
+          headerRender={this.renderHeaderVideo}
+          leftIcon={{icon, onPress}} >
+            {content}
+        </ParalaxToolbar>
+    );
   }
 
   handleItem = (rowData) => {
     this.props.navigationStateActions.pushRoute({
       key: 'Article',
       title: rowData.title,
-      backgroundImage: rowData.image,
-      data: { title: rowData.title, description: rowData.description},
+      headerImage: rowData.image,
+      description: rowData.description,
     });
   }
 
@@ -75,7 +96,6 @@ class NewsView extends Component {
       <View style={styles.container}>
         <Text style={styles.noData}>No data</Text>
       </View>
-
     )
   }
 }

@@ -12,7 +12,7 @@ class AvatarFest extends Component {
 
   navigateBack() {
     const navigationState = store.getState().get('navigationState');
-    const items = navigationState.get('menuItems');
+    const items = navigationState.get('menu');
     const sceneKey = items.getIn(['routes', items.get('index')]).get('key');
     const currentScene = navigationState.getIn(['scenes', sceneKey]);
 

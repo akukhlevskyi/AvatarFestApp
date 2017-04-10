@@ -6,9 +6,20 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-import Touchable from "./Touchable"
+import Touchable from './Touchable'
 
 const ITEM_OFFSET = 6;
+const shadowOpt = {
+  // width:Dimensions.,
+  height:100,
+    color:"#000",
+    border:2,
+    radius:3,
+    opacity:0.2,
+    x:0,
+    y:3,
+    style:{ flex: 1, marginVertical:5}
+};
 
 class NewsItem extends Component {
   static displayName = 'NewsItem';
@@ -70,6 +81,14 @@ const styles = StyleSheet.create({
     borderColor: '#CCC',
     flexWrap: "wrap",
     flexDirection: 'column',
+    elevation: 3,
+    shadowColor: "#000000",
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 3,
+      width: 0
+    },
   },
   icon: {
     flex: 1,

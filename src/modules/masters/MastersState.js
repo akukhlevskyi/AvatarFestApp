@@ -34,7 +34,7 @@ const initialState = fromJS({
 });
 
 // Reducer
-export default function MastersStateReduces(state = initialState, action) {
+export default function MastersStateReducer(state = initialState, action) {
   switch (action.type) {
     case FETCH_MASTERS:
       if (action.payload === undefined || action.payload.length == 0) {

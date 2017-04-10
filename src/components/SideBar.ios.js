@@ -17,6 +17,7 @@ class SideBar extends BaseSideBar {
         menuPosition={this.props.menuPosition}
         openMenuOffset={this.props.menuWidth}
         onChange={this.props.onChange}
+        isOpen={this.props.isOpen}
         ref={(sideMenu) => { this.sideMenu = sideMenu; }}
         menu={menu}>
         <View style={styles.container}>

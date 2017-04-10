@@ -68,6 +68,14 @@ const styles = StyleSheet.create({
     borderColor: '#CCC',
     flexWrap: "wrap",
     flexDirection: 'column',
+    elevation: 3,
+    shadowColor: "#000000",
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 3,
+      width: 0
+    },
   },
   icon: {
     width: (ITEM_SIZE-4*ITEM_OFFSET),

@@ -5,12 +5,14 @@ import {isNumber} from 'lodash';
 const {StateUtils: NavigationStateUtils} = NavigationExperimental;
 
 // Actions
+const TOGGLE_MENU = 'NavigationState/TOGGLE_MENU';
+const OPEN_MENU = 'NavigationState/OPEN_MENU';
 const PUSH_ROUTE = 'NavigationState/PUSH_ROUTE';
 const POP_ROUTE = 'NavigationState/POP_ROUTE';
 const SWITCH_SCENE = 'NavigationState/SWITCH_SCENE';
 
 const SCENES = 'scenes';
-const MENU_ITEMS = 'menuItems';
+const MENU = 'menu';
 
 export function switchScene(key) {
   return {
@@ -20,7 +22,7 @@ export function switchScene(key) {
 }
 
 export function showBackButton(navigationState) {
-  const items = navigationState.get('menuItems');
+  const items = navigationState.get(MENU);
   const sceneKey = items.getIn(['routes', items.get('index')]).get('key');
   const currentScene = navigationState.getIn(['scenes', sceneKey]);
 
@@ -29,6 +31,19 @@ export function showBackButton(navigationState) {
 }
 
 // Action creators
+export function toggleMenu() {
+  return {
+    type: TOGGLE_MENU,
+  };
+}
+
+export function openMenu(isOpen) {
+  return {
+    type: OPEN_MENU,
+    payload: isOpen,
+  };
+}
+
 export function pushRoute(route) {
   return {
     type: PUSH_ROUTE,
@@ -40,10 +55,11 @@ export function popRoute() {
   return {type: POP_ROUTE};
 }
 
-// reducers for MENU_ITEMS and MENU_ITEMS are separate
+// reducers for menu and scenes are separate
 const initialState = fromJS({
   // SideBar menu items
-  menuItems: {
+  menu: {
+    opened: false,
     index: 0,
     routes: [
       {
@@ -59,7 +75,7 @@ const initialState = fromJS({
       {
         key: 'MastersScene',
         title: 'Masters',
-        icon: 'ic_action_lineup',
+        icon: 'ic_action_jedi',
       },
       {
         key: 'AboutScene',
@@ -71,21 +87,23 @@ const initialState = fromJS({
   // MENU_ITEMS:
   scenes: {
     NewsScene: {
+      opened: false,
       index: 0,
-      routes: [{key: 'News', title: 'News'}]
+      routes: [{
+        key: 'News',
+        title: 'News',
+        headerHeight: 240,
+        videoInHeader: true,
+      }]
     },
     LineUpScene: {
       index: 0,
-      routes: [{key: 'Color', title: 'LineUp'}]
+      routes: [{key: 'LineUp', title: 'LineUp'}]
     },
     MastersScene: {
       index: 0,
       routes: [{key: 'Masters', title: 'Masters'}]
     },
-    // MasterScene: {
-    //   index: 1,
-    //   routes: [{key: 'Profile', title: 'Master'}]
-    // },
     AboutScene: {
       index: 0,
       routes: [{key: 'Color', title: 'About'}]
@@ -96,10 +114,9 @@ const initialState = fromJS({
 export default function NavigationReducer(state = initialState, action) {
   switch (action.type) {
     case PUSH_ROUTE: {
-      console.log("PUSH_ROUTE state " + JSON.stringify(state, null, 2));
       //Push a route into the scenes stack.
       const route = action.payload;
-      const items = state.get(MENU_ITEMS);
+      const items = state.get(MENU);
       const sceneKey = items.getIn(['routes', items.get('index')]).get('key');
       const scene = state.getIn([SCENES, sceneKey]).toJS();
       let nextScene;
@@ -115,7 +132,7 @@ export default function NavigationReducer(state = initialState, action) {
     }
     case POP_ROUTE: {
       // Pops a route from the MENU_ITEMS stack.
-      const items = state.get(MENU_ITEMS);
+      const items = state.get(MENU);
       const sceneKey = items.getIn(['routes', items.get('index')]).get('key');
       const scene = state.getIn([SCENES, sceneKey]).toJS();
       const nextScene = NavigationStateUtils.pop(scene);
@@ -126,9 +143,7 @@ export default function NavigationReducer(state = initialState, action) {
     }
     case SWITCH_SCENE: {
       // Switches the tab.
-      const items = state.get(MENU_ITEMS).toJS();
-      console.log("SWITCH_SCENE items " + JSON.stringify(items, null, 2));
-      console.log("SWITCH_SCENE action.payload " + action.payload);
+      const items = state.get(MENU).toJS();
 
       let nextScene;
       try {
@@ -136,14 +151,25 @@ export default function NavigationReducer(state = initialState, action) {
           ? NavigationStateUtils.jumpToIndex(items, action.payload)
           : NavigationStateUtils.jumpTo(items, action.payload);
 
-          console.log("SWITCH_SCENE nextScene " + JSON.stringify(nextScene, null, 2));
-          return state.set(MENU_ITEMS, fromJS(nextScene));
+          return state.set(MENU, fromJS(nextScene));
       } catch (e) {
-        console.log("SWITCH_SCENE error " + JSON.stringify(e, null, 2));
         return state;
       }
     }
+    case TOGGLE_MENU: {
+      const oldValue = state.getIn([MENU, "opened"]);
+      const newValue = !oldValue;
 
+      return state.setIn([MENU, "opened"], newValue);
+    }
+    case OPEN_MENU: {
+      const oldValue = state.getIn([MENU, "opened"]);
+      const newValue = action.payload;
+      if (oldValue !== newValue) {
+        return state.setIn([MENU, "opened"], newValue);
+      }
+      return state;
+    }
     default:
       return state;
   }

@@ -12,6 +12,7 @@ export default connect(
   dispatch => {
     return {
       updateNews: bindActionCreators(updateNews, dispatch),
+      //menuStateActions: bindActionCreators(MenuState, dispatch),
       navigationStateActions: bindActionCreators(NavigationStateActions, dispatch),
     };
   }

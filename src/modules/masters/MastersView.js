@@ -9,6 +9,7 @@ import {
   StyleSheet
 } from 'react-native';
 
+import ParalaxToolbar from '../../components/ParalaxToolbar';
 import MasterItem from '../../components/MasterItem';
 
 class MastersView extends Component {
@@ -25,27 +26,40 @@ class MastersView extends Component {
     this.props.updateMasters();
   }
 
+  renderDecorator = (content) => {
+    const icon = 'ic_action_navigate';
+    const onPress = () => {
+       this.props.navigationStateActions.toggleMenu();
+    }
+
+    return (
+        <ParalaxToolbar
+          navbarBackgroundColor='#61B0DF'
+          style={styles.container}
+          title={this.props.title}
+          // navbarBackgroundImage={require('./res/home.jpg')}
+          // headerHeight={240}
+          leftIcon={{icon, onPress}} >
+            {content}
+        </ParalaxToolbar>
+  )}
+
   render() {
     if (!this.props.isReady) {
-      return (
-        <View style={styles.container}>
-          <ActivityIndicator style={styles.centered} />
-        </View>
-      );
+      return this.renderDecorator((<ActivityIndicator style={styles.centered} />));
     }
 
     const {items} = this.props;
-
-    return items.length > 0 ? this.renderList(items) : this.renderNoData();
+    return this.renderDecorator(items.length > 0 ? this.renderList(items) : this.renderNoData());
   }
 
   handleItem = (rowData) => {
     this.props.navigationStateActions.pushRoute({
       key: 'Master',
-      title: rowData.title,
+      title: rowData.name,
       profileImage: rowData.avatarImg,
-      backgroundImage: rowData.backgrounImg,
-      data: { title: rowData.name, description: rowData.description},
+      headerImage: rowData.backgrounImg,
+      description: rowData.description,
     });
   }
 
@@ -74,7 +88,7 @@ class MastersView extends Component {
   renderNoData = () => {
     return (
       <View style={styles.container}>
-        <Text style={[styles.centered, styles.noData]}>No data</Text>
+        <Text style={styles.noData}>No data</Text>
       </View>
 
     )
@@ -86,14 +100,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
   },
-  noData: {
-    fontSize: 18,
-    color: '#646464',
-  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  noData: {
+    fontSize: 18,
+    color: '#646464',
   },
   list: {
     flexDirection: 'row',

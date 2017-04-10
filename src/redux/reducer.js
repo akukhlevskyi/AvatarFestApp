@@ -4,8 +4,9 @@ import NavigationStateReducer from '../modules/navigation/NavigationState';
 import CounterStateReducer from '../modules/counter/CounterState';
 
 import SessionStateReducer, {RESET_STATE} from '../modules/session/SessionState';
-import MastersStateReduces from '../modules/masters/MastersState';
-import NewsStateReduces from '../modules/news/NewsState';
+import MastersStateReducer from '../modules/masters/MastersState';
+import NewsStateReducer from '../modules/news/NewsState';
+import LineUpStateReducer from '../modules/lineup/LineUpState';
 
 const reducers = {
   // Counter sample app state. This can be removed in a live application
@@ -17,9 +18,11 @@ const reducers = {
 
   session: SessionStateReducer,
 
-  masters: MastersStateReduces,
+  masters: MastersStateReducer,
 
-  news: NewsStateReduces,
+  lineup: LineUpStateReducer,
+
+  news: NewsStateReducer,
 };
 
 // initial state, accessor and mutator for supporting root-level
