@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import Touchable from './Touchable';
+import SharedView from './SharedView';
 
 const PROFILE_WIDTH = 90;
 const PROFILE_RADIUS = PROFILE_WIDTH / 2;
@@ -39,6 +40,7 @@ class ParalaxToolbar extends Component {
       onPress:PropTypes.func,
     }),
     title: PropTypes.string,
+    routeName: PropTypes.string.isRequired,
     navbarBackgroundColor: PropTypes.string.isRequired,
     navbarBackgroundImage: PropTypes.oneOfType([
       PropTypes.string,
@@ -56,6 +58,7 @@ class ParalaxToolbar extends Component {
   static defaultProps = {
     headerHeight: NAVBAR_HEIGHT,
     showShadow: true,
+    navbarBackgroundColor: '#61B0DF',
   }
 
   state = {
@@ -100,6 +103,10 @@ class ParalaxToolbar extends Component {
     return image;
   }
 
+  componentDidMount() {
+
+  }
+
   render() {
     const {headerHeight} = this.state;
 
@@ -117,6 +124,7 @@ class ParalaxToolbar extends Component {
       <View style={{flex: 1}}>
         <View style={[styles.fill, { overflow: 'hidden' }]}>
           <Animated.ScrollView
+            overScrollMode="always"
             scrollEventThrottle={16}
             style={styles.fill}
             contentContainerStyle={[styles.content, {paddingTop: headerHeight,}]}
@@ -135,13 +143,27 @@ class ParalaxToolbar extends Component {
               transform: [{ translateY: this._provideHeaderTranslate() }] }]} pointerEvents="none">
               <View style={[(this.props.showShadow ? styles.navbarShadow : styles.navbarNoShadow),
                           {backgroundColor: this.props.navbarBackgroundColor, }]}>
-                <Animated.Image
-                  style={[styles.navbarImage, {height: headerHeight,
-                          opacity: this._provideImageOpacity(),
-                          transform: [{ translateY: imageTranslate }, { scale: imageScale }]}]}
-                  resizeMode="cover"
-                  source={this._velidateImageRes(this.props.navbarBackgroundImage)}
-                />
+                <View style={[styles.navbarImage, {height: headerHeight}]}>
+                  <SharedView style={[styles.navbarImage, {height: headerHeight, opacity: 0,}]}
+                              name={`image-${this.props.title}`}
+                              containerRouteName={this.props.routeName}>
+                    <Image
+                      style={[styles.navbarImage, {height: headerHeight, backgroundColor: this.props.navbarBackgroundColor}]}
+                      resizeMode="cover"
+                      source={this._velidateImageRes(this.props.navbarBackgroundImage)}
+                    />
+                  </SharedView>
+
+                  <Animated.Image
+                              style={[styles.navbarImage, {height: headerHeight,
+                                     opacity: this._provideImageOpacity(),
+                                     transform: [{ translateY: imageTranslate }, { scale: imageScale }]
+                                    }]}
+                              resizeMode="cover"
+                              source={this._velidateImageRes(this.props.navbarBackgroundImage)}
+                            />
+                </View>
+
                 {
                   !!this.props.headerRender
                   ? (<Animated.View style={{opacity: this._provideImageOpacity(), transform: [{ translateY: imageTranslate }, { scale: imageScale }], height: headerHeight, position: 'absolute', left:0, right:0, bottom: 0,}}>
@@ -154,18 +176,10 @@ class ParalaxToolbar extends Component {
 
           {this._renderProfileImage()}
           {this._renderNavbar()}
-          {this._renderStatusBar()}
 
         </View>
       </View>
     );
-  }
-
-  _renderStatusBar = () => {
-    if (Platform.OS === 'android')
-      return (<StatusBar backgroundColor="#00000066" translucent={true}/>);
-
-    return (<StatusBar barStyle="light-content" />);
   }
 
   _renderNavbar = () => {
@@ -228,18 +242,23 @@ class ParalaxToolbar extends Component {
       outputRange: [1, 0],
     });
 
-    return (<Animated.View style={[
-      styles.profile,
-      {top: headerHeight - 46,
-       opacity: profileOpacity,
-       transform: [{ translateY: profileTranslateY }, { translateX: profileTranslateX }, { scale: profileScale }] }
-    ]}>
-      <Image
-        resizeMode="cover"
-        style={styles.profileImage}
-        source={this._velidateImageRes(this.props.profileImage)}
-      />
-    </Animated.View>)
+    return (
+          <Animated.View style={[styles.profile,
+                                {top: headerHeight - 46,
+                                opacity: profileOpacity,
+                                transform: [{ translateY: profileTranslateY }, { translateX: profileTranslateX }, { scale: profileScale }] }
+                                ]}>
+            <SharedView style={{flex: 1}}
+                        name={`profile-${this.props.title}`}
+                        containerRouteName={this.props.routeName}>
+              <Image
+                resizeMode="cover"
+                style={styles.profileImage}
+                source={this._velidateImageRes(this.props.profileImage)}
+              />
+          </SharedView>
+      </Animated.View>
+    )
   }
 
   _renderNavbarIcon = (config) => {
@@ -281,7 +300,7 @@ const styles = StyleSheet.create({
     left:0,
     right:0,
     bottom: 0,
-    resizeMode: 'contain',
+    //resizeMode: 'contain',
   },
   navbarShadow: {
     position: 'absolute',
@@ -328,6 +347,7 @@ const styles = StyleSheet.create({
     borderRadius: (PROFILE_WIDTH + 4)/2,
     position: 'absolute',
     left: 10,
+    padding:2,
     alignItems: 'center',
     justifyContent: 'center',
   },

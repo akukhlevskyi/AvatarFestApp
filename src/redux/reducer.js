@@ -1,7 +1,7 @@
 import {Map, fromJS} from 'immutable';
 import {loop, combineReducers} from 'redux-loop-symbol-ponyfill';
-import NavigationStateReducer from '../modules/navigation/NavigationState';
 
+import NavigatorStateReducer from '../modules/navigator/NavigatorState';
 import SessionStateReducer, {RESET_STATE} from '../modules/session/SessionState';
 import MastersStateReducer from '../modules/masters/MastersState';
 import NewsStateReducer from '../modules/news/NewsState';
@@ -10,7 +10,7 @@ import LineUpStateReducer from '../modules/lineup/LineUpState';
 const reducers = {
   // @NOTE: By convention, the navigation state must live in a subtree called
   //`navigationState`
-  navigationState: NavigationStateReducer,
+  navigatorState: NavigatorStateReducer,
 
   session: SessionStateReducer,
 

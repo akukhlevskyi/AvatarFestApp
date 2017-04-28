@@ -17,9 +17,7 @@ class LineUpView extends Component {
   static displayName = 'LineUpView';
   static propTypes = {
     isReady: PropTypes.bool.isRequired,
-    navigationStateActions: PropTypes.shape({
-      pushRoute: PropTypes.func.isRequired,
-    }).isRequired,
+    navigate: PropTypes.func.isRequired,
     updateLineUp: PropTypes.func.isRequired,
   };
 
@@ -27,17 +25,18 @@ class LineUpView extends Component {
     this.props.updateLineUp();
   }
 
-  renderDecorator = (content, shadow=true) => {
+  _renderDecorator = (content, shadow=true) => {
     const icon = 'ic_action_navigate';
     const onPress = () => {
-       this.props.navigationStateActions.toggleMenu();
+      // open drawer
+      this.props.navigate({routeName: 'DrawerOpen'});
     }
 
     return (
         <ParalaxToolbar
-          navbarBackgroundColor='#61B0DF'
           style={styles.container}
-          title={this.props.title}
+          title="Line Up"
+          routeName={this.props.navigation.state.routeName}
           showShadow={shadow}
           leftIcon={{icon, onPress}} >
             {content}
@@ -46,16 +45,16 @@ class LineUpView extends Component {
 
   render() {
     if (!this.props.isReady) {
-      return this.renderDecorator((<ActivityIndicator style={styles.centered} />));
+      return this._renderDecorator((<ActivityIndicator style={styles.centered} />));
     }
 
     const {items} = this.props;
     return items.length > 0 ?
-              this.renderDecorator(this.renderContent(items), false) :
-              this.renderDecorator(this.renderNoData());
+              this._renderDecorator(this._renderContent(items), false) :
+              this._renderDecorator(this._renderNoData());
   }
 
-  renderContent = (items) => {
+  _renderContent = (items) => {
     return (
       <ScrollableTabView
         initialPage={0}
@@ -66,23 +65,13 @@ class LineUpView extends Component {
         style={styles.tabBar}
         renderTabBar={() => <ScrollableTabBar/>}>
         {items.map((item, i) => {
-          return (<View key={i} tabLabel={item.title}>{this.renderList(item.lineup)}</View>)
+          return (<View key={i} tabLabel={item.title}>{this._renderList(item.lineup)}</View>)
         })}
       </ScrollableTabView>
     );
   }
 
-  handleItem = (rowData) => {
-    this.props.navigationStateActions.pushRoute({
-      key: 'Master',
-      title: rowData.name,
-      profileImage: rowData.avatarImg,
-      headerImage: rowData.backgrounImg,
-      description: rowData.description,
-    });
-  }
-
-  renderItem = (rowData) => {
+  _renderItem = (rowData) => {
     switch (rowData.type) {
       case "day":
         return (<Text style={{marginHorizontal: 6, marginVertical: 10}}>{rowData.title}</Text>);
@@ -100,7 +89,7 @@ class LineUpView extends Component {
     }
   }
 
-  renderList = (items) => {
+  _renderList = (items) => {
     const dataSource = new ListView.DataSource(
       {rowHasChanged: (r1, r2) => r1.id !== r2.id},
     );
@@ -111,11 +100,11 @@ class LineUpView extends Component {
         initialListSize={21}
         scrollRenderAheadDistance={500}
         dataSource={dataSource.cloneWithRows(items)}
-        renderRow={this.renderItem} />
+        renderRow={this._renderItem.bind(this)} />
     )
   }
 
-  renderNoData = () => {
+  _renderNoData = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.noData}>No data</Text>

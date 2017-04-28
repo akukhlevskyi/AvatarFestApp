@@ -6,7 +6,9 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
+
 import Touchable from './Touchable'
+import SharedView from './SharedView';
 
 const ITEM_OFFSET = 6;
 const shadowOpt = {
@@ -26,6 +28,7 @@ class NewsItem extends Component {
 
   static propTypes = {
     onPress: PropTypes.func.isRequired,
+    routeName: PropTypes.string.isRequired,
     data: PropTypes.shape({
       description: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
@@ -44,10 +47,10 @@ class NewsItem extends Component {
             <View style={styles.wrap}>
               <Text style={styles.title}>{this.props.data.title}</Text>
             </View>
-            <View style={styles.wrap}>
-              <Image source={{uri: this.props.data.image}}
-                style={styles.icon}/>
-            </View>
+            <SharedView style={styles.wrap} name={`image-${this.props.data.title}`} containerRouteName={this.props.routeName}>
+                <Image source={{uri: this.props.data.image}}
+                  style={styles.icon}/>
+            </SharedView>
             <View style={styles.wrap}>
               <Text numberOfLines={3}
                 style={styles.description}>
@@ -70,8 +73,8 @@ const styles = StyleSheet.create({
   content: {
     justifyContent: 'center',
     flex: 1,
-    paddingLeft:ITEM_OFFSET,
-    paddingRight:ITEM_OFFSET,
+    paddingLeft:2*ITEM_OFFSET,
+    paddingRight:2*ITEM_OFFSET,
     paddingTop:12,
     paddingBottom:12,
     alignItems: 'center',
@@ -93,7 +96,6 @@ const styles = StyleSheet.create({
   icon: {
     flex: 1,
     height: 160,
-    margin:ITEM_OFFSET,
     borderRadius: 5,
   },
   wrap: {
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: "wrap",
     fontSize: 16,
-    margin: 6,
+    marginBottom: 2*ITEM_OFFSET,
     height: 20,
     justifyContent: 'center',
     color: '#222'
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     minHeight: 20,
     maxHeight: 70,
-    margin: 6,
+    marginTop: 2*ITEM_OFFSET,
     justifyContent: 'center',
     color: '#646464',
   },

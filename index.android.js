@@ -3,7 +3,7 @@ import store from './src/redux/store';
 import AppViewContainer from './src/modules/AppViewContainer';
 import React, {Component} from 'react';
 import {AppRegistry, BackAndroid} from 'react-native';
-import * as NavigationStateActions from './src/modules/navigation/NavigationState';
+import {NavigationActions} from 'react-navigation';
 
 class AvatarFest extends Component {
   componentWillMount() {
@@ -11,25 +11,26 @@ class AvatarFest extends Component {
   }
 
   navigateBack() {
-    const navigationState = store.getState().get('navigationState');
-    const items = navigationState.get('menu');
-    const sceneKey = items.getIn(['routes', items.get('index')]).get('key');
-    const currentScene = navigationState.getIn(['scenes', sceneKey]);
+    let state = store.getState().get('navigatorState');
 
-    // if we are in the beginning of our tab stack
-    if (currentScene.get('index') === 0) {
-      // if we are not in the first tab, switch tab to the leftmost one
-      if (items.get('index') !== 0) {
-        store.dispatch(NavigationStateActions.switchScene(0));
-        return true;
+    let bispatchBack = false;
+    do {
+      const index = state.get('index');
+      if ( typeof index === 'number' && index !== 0){
+        bispatchBack = true;
+        break;
       }
 
-      // otherwise let OS handle the back button action
-      return false;
+      state = state.getIn(['routes', index]);
+    } while (state);
+
+    if (bispatchBack) {
+      store.dispatch(NavigationActions.back());
+      return true;
     }
 
-    store.dispatch(NavigationStateActions.popRoute());
-    return true;
+    // otherwise let OS handle the back button action
+    return false;
   }
 
   render() {

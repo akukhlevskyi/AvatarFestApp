@@ -16,9 +16,7 @@ class MastersView extends Component {
   static displayName = 'MastersView';
   static propTypes = {
     isReady: PropTypes.bool.isRequired,
-    navigationStateActions: PropTypes.shape({
-      pushRoute: PropTypes.func.isRequired,
-    }).isRequired,
+    navigate: PropTypes.func.isRequired,
     updateMasters: PropTypes.func.isRequired,
   };
 
@@ -26,19 +24,18 @@ class MastersView extends Component {
     this.props.updateMasters();
   }
 
-  renderDecorator = (content) => {
+  _renderDecorator = (content) => {
     const icon = 'ic_action_navigate';
     const onPress = () => {
-       this.props.navigationStateActions.toggleMenu();
+      // open drawer
+      this.props.navigate({routeName: 'DrawerOpen'});
     }
 
     return (
         <ParalaxToolbar
-          navbarBackgroundColor='#61B0DF'
           style={styles.container}
-          title={this.props.title}
-          // navbarBackgroundImage={require('./res/home.jpg')}
-          // headerHeight={240}
+          title="Masters"
+          routeName={this.props.navigation.state.routeName}
           leftIcon={{icon, onPress}} >
             {content}
         </ParalaxToolbar>
@@ -46,31 +43,35 @@ class MastersView extends Component {
 
   render() {
     if (!this.props.isReady) {
-      return this.renderDecorator((<ActivityIndicator style={styles.centered} />));
+      return this._renderDecorator((<ActivityIndicator style={styles.centered} />));
     }
 
     const {items} = this.props;
-    return this.renderDecorator(items.length > 0 ? this.renderList(items) : this.renderNoData());
+    return this._renderDecorator(items.length > 0 ? this._renderList(items) : this._renderNoData());
   }
 
-  handleItem = (rowData) => {
-    this.props.navigationStateActions.pushRoute({
-      key: 'Master',
-      title: rowData.name,
-      profileImage: rowData.avatarImg,
-      headerImage: rowData.backgrounImg,
-      description: rowData.description,
+  _handleItem = (rowData) => {
+    this.props.navigate({
+      routeName: 'MasterDetailsScene',
+      params: {
+        key: 'master',
+        title: rowData.name,
+        profileImage: rowData.avatarImg,
+        headerImage: rowData.backgrounImg,
+        description: rowData.description,
+      },
     });
   }
 
-  renderItem = (rowData) => {
+  _renderItem = (rowData) => {
     return (<MasterItem
-      onPress={this.handleItem}
+      onPress={this._handleItem.bind(this)}
+      routeName={this.props.navigation.state.routeName}
       data={rowData}/>
     );
   }
 
-  renderList = (items) => {
+  _renderList = (items) => {
     const dataSource = new ListView.DataSource(
       {rowHasChanged: (r1, r2) => r1.id !== r2.id},
     );
@@ -81,11 +82,11 @@ class MastersView extends Component {
         initialListSize={21}
         scrollRenderAheadDistance={500}
         dataSource={dataSource.cloneWithRows(items)}
-        renderRow={this.renderItem} />
+        renderRow={this._renderItem.bind(this)} />
     )
   }
 
-  renderNoData = () => {
+  _renderNoData = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.noData}>No data</Text>

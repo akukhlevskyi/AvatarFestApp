@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import LineUpView from './LineUpView';
 import {updateLineUp} from './LineUpState';
-import * as NavigationStateActions from '../navigation/NavigationState';
+import {NavigationActions} from 'react-navigation';
 
 export default connect(
   state => ({
@@ -12,7 +12,7 @@ export default connect(
   dispatch => {
     return {
       updateLineUp: bindActionCreators(updateLineUp, dispatch),
-      navigationStateActions: bindActionCreators(NavigationStateActions, dispatch),
+      navigate: bindActionCreators(NavigationActions.navigate, dispatch),
     };
   }
 )(LineUpView);

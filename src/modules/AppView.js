@@ -1,6 +1,11 @@
 import React, {PropTypes, Component} from 'react';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
-import NavigationViewContainer from './navigation/NavigationViewContainer';
+import {
+  View,
+  Platform,
+  StatusBar,
+  StyleSheet,
+} from 'react-native';
+import NavigatorViewContainer from './navigator/NavigatorViewContainer';
 import * as snapshotUtil from '../utils/snapshot';
 import * as SessionStateActions from '../modules/session/SessionState';
 import store from '../redux/store';
@@ -34,26 +39,29 @@ class AppView extends Component {
   render() {
     if (!this.props.isReady) {
       return null;
-      //  (
-      //   <View style={{flex: 1}}>
-      //     <ActivityIndicator style={styles.centered} />
-      //   </View>
-      // );
     }
 
     return (
-      <View style={{flex: 1}}>
-        <NavigationViewContainer />
+      <View style={styles.container}>
+        {this._renderStatusBar()}
+        <NavigatorViewContainer />
         {__DEV__ && <DeveloperMenu />}
       </View>
     );
   }
+
+  _renderStatusBar = () => {
+    if (Platform.OS === 'android')
+      return (<StatusBar backgroundColor="#00000066" translucent={true}/>);
+
+    return (<StatusBar barStyle="light-content" />);
+  }
 }
 
 const styles = StyleSheet.create({
-  centered: {
+  container: {
     flex: 1,
-    alignSelf: 'center'
+    backgroundColor: '#eeedf2',
   }
 });
 

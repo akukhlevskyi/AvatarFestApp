@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import MastersView from './MastersView';
 import {updateMasters} from './MastersState';
-import * as NavigationStateActions from '../navigation/NavigationState';
+import {NavigationActions} from 'react-navigation';
 
 export default connect(
   state => ({
@@ -12,7 +12,7 @@ export default connect(
   dispatch => {
     return {
       updateMasters: bindActionCreators(updateMasters, dispatch),
-      navigationStateActions: bindActionCreators(NavigationStateActions, dispatch),
+      navigate: bindActionCreators(NavigationActions.navigate, dispatch),
     };
   }
 )(MastersView);
