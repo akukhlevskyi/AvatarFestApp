@@ -167,7 +167,7 @@ class SharedElementTransitioner extends Component {
         };
     }
     _getSharedElementStyle(props, prevProps, itemFrom, itemTo) {
-        const { position, progress, navigationState: {index} } = props;
+        const { progress, } = props;
 
         const getElementType = (item) => {
             const type = item.reactElement.type;
@@ -289,8 +289,8 @@ class SharedElementTransitioner extends Component {
         return { left, top, right, bottom, width, height };
     }
     _interpolateZIndex(props, prevProps, base: number) {
-        const { position, navigationState: {index} } = props;
-        const prevIndex = prevProps.navigationState.index;
+        const { position, index } = props;
+        const prevIndex = prevProps.index;
         const minIdx = Math.min(index, prevIndex);
         const maxIdx = Math.max(index, prevIndex);
 
@@ -305,8 +305,8 @@ class SharedElementTransitioner extends Component {
 
         const fromItemBBox = this._getBBox(pairs.map(p => p.fromItem.metrics));
         const toItemBBox = this._getBBox(pairs.map(p => p.toItem.metrics));
-        const { position, progress, navigationState: {index} } = props;
-        const prevIndex = prevProps.navigationState.index;
+        const { position, index, } = props;
+        const prevIndex = prevProps.index;
         const minIdx = Math.min(index, prevIndex);
         const maxIdx = Math.max(index, prevIndex);
         const inputRange = [minIdx, maxIdx];
