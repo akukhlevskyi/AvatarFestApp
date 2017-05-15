@@ -11,7 +11,7 @@ import {
   TabNavigator,
   StackNavigator,
   DrawerNavigator,
-  DrawerView,
+  DrawerItems,
   StackRouter,
 } from 'react-navigation';
 
@@ -86,11 +86,11 @@ const AppNavigator = DrawerNavigator({
   contentOptions: {
     activeTintColor: '#e91e63',
   },
-  contentComponent: props => (
+  contentComponent: (props) => (
     <DrawerDecorator>
-      <DrawerView.Items {...props} />
+      <DrawerItems {...props} />
     </DrawerDecorator>
-  )
+  ),
 });
 
 export default AppNavigator;
